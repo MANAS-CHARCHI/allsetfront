@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Lock_Header() {
+export default function LockHeader() {
   return (
     <header className="bg-white text-black p-4 ">
       <nav className="flex lg:px-4  w-full">
