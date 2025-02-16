@@ -5,8 +5,18 @@ import InputBox from "../../props/input-box";
 import Button from "../../props/button";
 import Link from "next/link";
 
+import { registerUser } from "../../services/user_urls";
+import { useRouter } from "next/navigation";
+
 export default function Registration() {
-  const [formData, setFormData] = useState({
+  const [error, setError] = useState<{ [key: string]: string }>({});
+  interface State {
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }
+
+  const [formData, setFormData] = useState<State>({
     email: "",
     password: "",
     confirmPassword: "",
@@ -18,9 +28,47 @@ export default function Registration() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateInput = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!formData.email) {
+      newErrors.email = "Email is required.";
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = "Enter a valid email address.";
+    }
+    if (!formData.password) {
+      newErrors.password = "Password is required.";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters.";
+    }
+    if (formData.confirmPassword !== formData.password) {
+      newErrors.confirmPassword = "Passwords do not match.";
+    }
+    setError(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const router = useRouter();
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Submitted", formData);
+    if (!validateInput()) {
+      return;
+    }
+    const payload = {
+      email: formData.email,
+      password: formData.password,
+    };
+    try {
+      const data = await registerUser(payload);
+      console.log(data);
+      if (data) {
+        alert(
+          "registration successful! Please check your email to activate your account"
+        );
+        router.push("/login");
+      }
+    } catch (error) {
+      setError(error as any);
+    }
   };
   return (
     <>
