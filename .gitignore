@@ -43,11 +43,13 @@ next-env.d.ts
 
 # Ignore the Next.js build output
 .next/
+.next
 
 # Ignore dependencies
 node_modules/
 
 # Ignore environment variables
+.env
 .env*
 .env.local
 .env.development.local

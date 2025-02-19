@@ -9,7 +9,8 @@ import { registerUser } from "../../services/user_urls";
 import { useRouter } from "next/navigation";
 
 export default function Registration() {
-  const [error, setError] = useState<{ [key: string]: string }>({});
+  const [error, setError] = useState<{ [key: string]: string } | null>(null);
+
   interface State {
     email: string;
     password: string;
@@ -66,8 +67,8 @@ export default function Registration() {
         );
         router.push("/login");
       }
-    } catch (error) {
-      setError(error as any);
+    } catch (errors) {
+      setError(errors as { [key: string]: string });
     }
   };
   return (
@@ -91,6 +92,7 @@ export default function Registration() {
                 value={formData.email}
                 onChange={handleChange}
                 className=" tracking-wide font-medium"
+                error={error?.email}
               />
             </div>
             <div className="flex flex-col">
@@ -102,6 +104,7 @@ export default function Registration() {
                 value={formData.password}
                 onChange={handleChange}
                 className=" tracking-widest font-bold"
+                error={error?.password}
               />
             </div>
             <div className="flex flex-col">
@@ -115,6 +118,7 @@ export default function Registration() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className=" tracking-widest font-bold"
+                error={error?.confirmPassword}
               />
             </div>
             <div className="flex flex-col items-center pt-4">
