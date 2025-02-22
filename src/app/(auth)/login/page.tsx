@@ -4,6 +4,7 @@ import Image from "next/image";
 import InputBox from "../../props/input-box";
 import Button from "../../props/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { useLogin } from "@/app/hooks/userLogin";
 
@@ -39,7 +40,8 @@ export default function Login() {
     setError(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  // const router = useRouter();
+
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateInput()) {
@@ -51,6 +53,7 @@ export default function Login() {
     };
     setIsLoading(true);
     await handleLogin(payload.email, payload.password);
+    router.push("/");
     setIsLoading(false);
   };
   return (
