@@ -47,7 +47,7 @@ export default function Registration() {
     setError(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  // Stores the router instance, which contains methods and properties for navigation.
   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +60,6 @@ export default function Registration() {
     };
     try {
       const data = await registerUser(payload);
-      console.log(data);
       if (data) {
         alert(
           "registration successful! Please check your email to activate your account"

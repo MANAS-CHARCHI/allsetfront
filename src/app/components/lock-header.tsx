@@ -6,11 +6,13 @@ export default function LockHeader() {
     <header className="bg-white text-black p-4 ">
       <nav className="flex lg:px-4  w-full">
         <Image src="/logo.png" alt="Logo" width={120} height={60} />
-        <button className="px-4 py-0.5 border border-gray-300 rounded-3xl ml-auto hover:bg-gray-100">
+        <div className="ml-auto">
           <Link href="/registration" className="text-lg">
-            Sign in
+            <button className="px-4 py-0.5 border border-gray-300 rounded-3xl  hover:bg-gray-100">
+              Sign in
+            </button>
           </Link>
-        </button>
+        </div>
       </nav>
     </header>
   );

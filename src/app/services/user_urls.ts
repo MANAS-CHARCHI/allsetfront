@@ -1,4 +1,4 @@
-import axiosAuth from "./axios_auth";
+// import axiosAuth from "./axios_auth";
 import axiosNoAuth from "./axios_no_auth";
 import { getUserUrl } from "./backend_urls";
 
@@ -13,6 +13,22 @@ export const registerUser = async (data: object) => {
       throw error;
     }
   };
+export const loginUser = async (data: object) => {
+    try {
+      const response = await axiosNoAuth.post(`${userUrl}login`, data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+}
+export const logoutUser = async (data: object) => {
+    try {
+      const response = await axiosNoAuth.post(`${userUrl}logout`, data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+}
 export const refreshToken = async (data: object) => {
     try {
       const response = await axiosNoAuth.post(`${userUrl}token/refresh`, data);

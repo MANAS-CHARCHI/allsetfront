@@ -5,8 +5,18 @@ import InputBox from "../../props/input-box";
 import Button from "../../props/button";
 import Link from "next/link";
 
+import { useLogin } from "@/app/hooks/userLogin";
+
 export default function Login() {
-  const [formData, setFormData] = useState({
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<{ [key: string]: string } | null>(null);
+  const { handleLogin } = useLogin();
+  interface State {
+    email: string;
+    password: string;
+  }
+
+  const [formData, setFormData] = useState<State>({
     email: "",
     password: "",
   });
@@ -16,9 +26,32 @@ export default function Login() {
       [e.target.name]: e.target.value,
     });
   };
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateInput = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!formData.email) {
+      newErrors.email = "Email is required.";
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = "Enter a valid email address.";
+    }
+    if (!formData.password) {
+      newErrors.password = "Password is required.";
+    }
+    setError(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  // const router = useRouter();
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Submitted", formData);
+    if (!validateInput()) {
+      return;
+    }
+    const payload = {
+      email: formData.email,
+      password: formData.password,
+    };
+    setIsLoading(true);
+    await handleLogin(payload.email, payload.password);
+    setIsLoading(false);
   };
   return (
     <>
@@ -41,6 +74,7 @@ export default function Login() {
                 value={formData.email}
                 onChange={handleChange}
                 className=" tracking-wide font-medium"
+                error={error?.email}
               />
             </div>
             <div className="flex flex-col">
@@ -60,10 +94,15 @@ export default function Login() {
                 value={formData.password}
                 onChange={handleChange}
                 className=" tracking-widest font-bold"
+                error={error?.password}
               />
             </div>
             <div className="flex flex-col items-center pt-4">
-              <Button label="Sign Up" type="submit" />
+              <Button
+                text={isLoading ? "Loading..." : ""}
+                label="Sign Up"
+                type="submit"
+              />
             </div>
             <div className="flex flex-col items-center">
               <p className="text-sm text-gray-500">
