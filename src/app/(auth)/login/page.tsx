@@ -1,17 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import InputBox from "../../props/input-box";
 import Button from "../../props/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { useLogin } from "@/app/hooks/userLogin";
+import { useLogin } from "@/app/hooks/useLogin";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<{ [key: string]: string } | null>(null);
-  const { handleLogin } = useLogin();
+  const { handleLogin, error } = useLogin();
+  const [invalidError, setInvalidError] = useState<{ [key: string]: string }>(
+    {}
+  );
   interface State {
     email: string;
     password: string;
@@ -27,6 +30,21 @@ export default function Login() {
       [e.target.name]: e.target.value,
     });
   };
+  useEffect(() => {
+    if (error || invalidError) {
+      if (error) {
+        toast.error(error, {
+          position: "top-right",
+          autoClose: 500,
+        });
+      } else if (invalidError) {
+        toast.error(Object.values(invalidError)[0], {
+          position: "top-right",
+          autoClose: 500,
+        });
+      }
+    }
+  }, [error, invalidError]);
   const validateInput = () => {
     const newErrors: { [key: string]: string } = {};
     if (!formData.email) {
@@ -37,7 +55,7 @@ export default function Login() {
     if (!formData.password) {
       newErrors.password = "Password is required.";
     }
-    setError(newErrors);
+    setInvalidError(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
@@ -51,11 +69,37 @@ export default function Login() {
       email: formData.email,
       password: formData.password,
     };
-    setIsLoading(true);
-    await handleLogin(payload.email, payload.password);
-    router.push("/");
-    setIsLoading(false);
+    try {
+      const response = await handleLogin(payload.email, payload.password);
+      if (response.error) {
+        console.log(response.error);
+      }
+      if (response) {
+        console.log("hyy from insoide");
+        toast.success("Login Successfully", {
+          position: "top-right",
+          autoClose: 1000,
+        });
+        console.log("redirecting...");
+        setTimeout(() => {
+          router.push("/");
+        }, 500);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error("Login Failed", {
+          position: "top-right",
+          autoClose: 1000,
+        });
+      } else {
+        toast.error("Unknown error", {
+          position: "top-right",
+          autoClose: 1000,
+        });
+      }
+    }
   };
+
   return (
     <>
       <div className="lg:pt-8">
@@ -77,7 +121,6 @@ export default function Login() {
                 value={formData.email}
                 onChange={handleChange}
                 className=" tracking-wide font-medium"
-                error={error?.email}
               />
             </div>
             <div className="flex flex-col">
@@ -97,21 +140,16 @@ export default function Login() {
                 value={formData.password}
                 onChange={handleChange}
                 className=" tracking-widest font-bold"
-                error={error?.password}
               />
             </div>
             <div className="flex flex-col items-center pt-4">
-              <Button
-                text={isLoading ? "Loading..." : ""}
-                label="Sign Up"
-                type="submit"
-              />
+              <Button label="Sign Up" type="submit" />
             </div>
             <div className="flex flex-col items-center">
               <p className="text-sm text-gray-500">
-                Already have an account?
-                <Link href="/login" className="underline px-1">
-                  Login
+                Create you account?
+                <Link href="/registration" className="underline px-1">
+                  Registration
                 </Link>
               </p>
             </div>

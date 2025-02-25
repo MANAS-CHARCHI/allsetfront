@@ -6,7 +6,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { User } from "../types/page";
+import { User } from "@/app/types/types";
 
 interface UserContextType {
   user: User | null;
@@ -16,14 +16,15 @@ interface UserContextType {
 export const UserContext = createContext<UserContextType | null>(null);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  useEffect(() => {
-    const storedUser = localStorage.getItem("payload");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("payload");
+      return storedUser ? JSON.parse(storedUser) : null;
     }
-  }, []);
+    return null;
+  });
 
+  // Update localStorage when user state changes
   useEffect(() => {
     if (user) {
       localStorage.setItem("payload", JSON.stringify(user));
@@ -31,6 +32,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       localStorage.removeItem("payload");
     }
   }, [user]);
+
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}
@@ -41,7 +43,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error("user not in userprovider");
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 };

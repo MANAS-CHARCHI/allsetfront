@@ -4,6 +4,8 @@ import Image from "next/image";
 import InputBox from "../../props/input-box";
 import Button from "../../props/button";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { registerUser } from "../../services/user_urls";
 import { useRouter } from "next/navigation";
@@ -61,13 +63,23 @@ export default function Registration() {
     try {
       const data = await registerUser(payload);
       if (data) {
-        alert(
-          "registration successful! Please check your email to activate your account"
+        toast.success(
+          "Registration successful! Check your email to activate your account.",
+          {
+            position: "top-right",
+            autoClose: 1000,
+          }
         );
-        router.push("/login");
+        setTimeout(() => {
+          router.push("/login");
+        }, 500);
       }
     } catch (errors) {
       setError(errors as { [key: string]: string });
+      toast.error("Registration failed. Please try again.", {
+        position: "top-right",
+        autoClose: 2000, // Close after 2 seconds
+      });
     }
   };
   return (

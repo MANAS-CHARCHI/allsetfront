@@ -9,5 +9,6 @@ const axiosNoAuth = axios.create({
     "Content-Type": "application/json",
   },
 });
+axiosNoAuth.defaults.withCredentials = true;
 
 export default axiosNoAuth;
