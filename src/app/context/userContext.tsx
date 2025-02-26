@@ -10,7 +10,7 @@ import { User } from "@/app/types/types";
 
 interface UserContextType {
   user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setUser: (user: User | null) => void;
 }
 
 export const UserContext = createContext<UserContextType | null>(null);
@@ -26,10 +26,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   // Update localStorage when user state changes
   useEffect(() => {
-    if (user) {
-      localStorage.setItem("payload", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("payload");
+    if (typeof window !== "undefined") {
+      if (user) {
+        localStorage.setItem("payload", JSON.stringify(user));
+      } else {
+        localStorage.removeItem("payload");
+      }
     }
   }, [user]);
 

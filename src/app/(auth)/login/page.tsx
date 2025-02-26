@@ -75,14 +75,13 @@ export default function Login() {
         console.log(response.error);
       }
       if (response) {
-        console.log("hyy from insoide");
         toast.success("Login Successfully", {
           position: "top-right",
           autoClose: 1000,
         });
         console.log("redirecting...");
         setTimeout(() => {
-          router.push("/");
+          router.push("/dashboard");
         }, 500);
       }
     } catch (error: unknown) {

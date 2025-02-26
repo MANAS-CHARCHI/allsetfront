@@ -1,5 +1,4 @@
 import {loginUser, logoutUser} from "../services/user_urls";
-// import { useAuth } from "../context/authContext";
 import {useUser} from "../context/UserContext";
 import { useState } from "react";
 

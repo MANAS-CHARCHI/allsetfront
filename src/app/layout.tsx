@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "./components/footer";
-// import { AuthProvider } from "./context/authContext";
+import { AuthProvider } from "./context/AuthContext";
 import { UserProvider } from "./context/UserContext";
 
 import { ToastContainer } from "react-toastify";
@@ -34,12 +34,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <ToastContainer />
-        {/* <AuthProvider> */}
-        <UserProvider>
-          <div className="flex-grow">{children}</div>
-          <Footer />
-        </UserProvider>
-        {/* </AuthProvider> */}
+        <AuthProvider>
+          <UserProvider>
+            <div className="flex-grow">{children}</div>
+            <Footer />
+          </UserProvider>
+        </AuthProvider>
       </body>
     </html>
   );

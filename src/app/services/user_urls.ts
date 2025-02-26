@@ -30,9 +30,9 @@ export const logoutUser = async () => {
       throw error;
     }
 }
-export const refreshToken = async (data: object) => {
+export const refreshToken = async () => {
     try {
-      const response = await axiosNoAuth.post(`${userUrl}token/refresh`, data);
+      const response = await axiosNoAuth.post(`${userUrl}token/refresh`);
       return response.data;
     } catch (error) {
       throw error;
