@@ -28,11 +28,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     router.push("/login");
-  //   }
-  // }, [isAuthenticated]);
+  useEffect(() => {
+    if (!isAuthenticated && !loading) {
+      router.push("/login");
+    }
+  }, [isAuthenticated, loading]);
 
   // TODO: Uncomment to chekc only authorizxed
 
