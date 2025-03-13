@@ -1,7 +1,6 @@
 "use client";
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -18,8 +17,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const payload = localStorage.getItem("payload");
-      const refreshToken = Cookies.get("refreshToken");
-      if (payload && refreshToken) {
+      if (payload) {
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);

@@ -6,7 +6,7 @@ const userUrl=getUserUrl();
 
 export const registerUser = async (data: object) => {
     try {
-      const response = await axiosNoAuth.post(`${userUrl}register`, data, {
+      const response = await axiosNoAuth.post(`${userUrl}register/`, data, {
         withCredentials: true,
       });
       return response.data;
@@ -16,7 +16,7 @@ export const registerUser = async (data: object) => {
   };
 export const loginUser = async (data: object) => {
     try {
-      const response = await axiosNoAuth.post(`${userUrl}login`, data);
+      const response = await axiosNoAuth.post(`${userUrl}login/`, data);
       return response.data;
     } catch (error) {
       throw error;
