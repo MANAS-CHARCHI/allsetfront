@@ -25,6 +25,9 @@ axiosInstance.interceptors.response.use(
         window.location.href = "/login";
       }
     }
+    if (error.response?.status === 401) {
+      return; // Just return to suppress the error
+    }
     return Promise.reject(error);
   }
 );

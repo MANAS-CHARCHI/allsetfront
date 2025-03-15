@@ -51,11 +51,16 @@ export default function Login() {
       password: formData.password,
     };
     try {
-      await login_user(payload.email, payload.password);
-      toast("Welcome to Allset!");
-      router.push("/");
+      const user = await login_user(payload.email, payload.password);
+      if (user.user && user.user.is_active === true) {
+        toast("Welcome to Allset!");
+        router.push("/");
+      } else {
+        toast("Please check your credentials!");
+      }
     } catch (e) {
       toast("Please check your credentials!");
+    } finally {
     }
   };
 
