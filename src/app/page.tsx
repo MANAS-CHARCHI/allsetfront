@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import Button from "./props/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { logout_user } from "@/app/utils/auth";
+import {
+  logout_user,
+  refresh_access_token,
+  verify_user,
+} from "@/app/utils/auth";
 
 type UserData = {
   email: string;
@@ -35,6 +39,14 @@ export default function Home() {
       toast("Something is wrong while logging out!");
     }
   };
+  const handleVerifyUser = async () => {
+    try {
+      await verify_user();
+      console.log("verification success");
+    } catch (e) {
+      console.log("verification failed");
+    }
+  };
 
   return (
     <main className="flex flex-col items-center justify-between p-24">
@@ -50,6 +62,18 @@ export default function Home() {
         label="Logout"
         type="submit"
         onClick={handleLogout}
+      />
+      <Button
+        className="mt-4"
+        label="Refresh Token"
+        type="submit"
+        onClick={refresh_access_token}
+      />
+      <Button
+        className="mt-4"
+        label="Verify User"
+        type="submit"
+        onClick={handleVerifyUser}
       />
     </main>
   );
