@@ -5,13 +5,10 @@ import InputBox from "../../props/input-box";
 import Button from "../../props/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-import { useLogin } from "@/app/hooks/useLogin";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { login_user } from "@/app/utils/auth";
+import { toast } from "sonner";
 
 export default function Login() {
-  const { handleLogin, error } = useLogin();
   const [invalidError, setInvalidError] = useState<{ [key: string]: string }>(
     {}
   );
@@ -19,7 +16,6 @@ export default function Login() {
     email: string;
     password: string;
   }
-
   const [formData, setFormData] = useState<State>({
     email: "",
     password: "",
@@ -30,21 +26,6 @@ export default function Login() {
       [e.target.name]: e.target.value,
     });
   };
-  useEffect(() => {
-    if (error || invalidError) {
-      if (error) {
-        toast.error(error, {
-          position: "top-right",
-          autoClose: 500,
-        });
-      } else if (invalidError) {
-        toast.error(Object.values(invalidError)[0], {
-          position: "top-right",
-          autoClose: 500,
-        });
-      }
-    }
-  }, [error, invalidError]);
   const validateInput = () => {
     const newErrors: { [key: string]: string } = {};
     if (!formData.email) {
@@ -70,32 +51,11 @@ export default function Login() {
       password: formData.password,
     };
     try {
-      const response = await handleLogin(payload.email, payload.password);
-      if (response.error) {
-        console.log(response.error);
-      }
-      if (response) {
-        toast.success("Login Successfully", {
-          position: "top-right",
-          autoClose: 1000,
-        });
-        console.log("redirecting...");
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 500);
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error("Login Failed", {
-          position: "top-right",
-          autoClose: 1000,
-        });
-      } else {
-        toast.error("Unknown error", {
-          position: "top-right",
-          autoClose: 1000,
-        });
-      }
+      await login_user(payload.email, payload.password);
+      toast("Welcome to Allset!");
+      router.push("/");
+    } catch (e) {
+      toast("Please check your credentials!");
     }
   };
 
@@ -120,6 +80,7 @@ export default function Login() {
                 value={formData.email}
                 onChange={handleChange}
                 className=" tracking-wide font-medium"
+                error={invalidError?.email}
               />
             </div>
             <div className="flex flex-col">
@@ -139,6 +100,7 @@ export default function Login() {
                 value={formData.password}
                 onChange={handleChange}
                 className=" tracking-widest font-bold"
+                error={invalidError?.password}
               />
             </div>
             <div className="flex flex-col items-center pt-4">

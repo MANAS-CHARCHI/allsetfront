@@ -4,11 +4,9 @@ import Image from "next/image";
 import InputBox from "../../props/input-box";
 import Button from "../../props/button";
 import Link from "next/link";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-import { registerUser } from "../../services/user_urls";
+import {register_user} from "@/app/utils/auth";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner" 
 
 export default function Registration() {
   const [error, setError] = useState<{ [key: string]: string } | null>(null);
@@ -17,7 +15,7 @@ export default function Registration() {
     email: string;
     password: string;
     confirmPassword: string;
-  }
+  };
 
   const [formData, setFormData] = useState<State>({
     email: "",
@@ -60,27 +58,14 @@ export default function Registration() {
       email: formData.email,
       password: formData.password,
     };
-    try {
-      const data = await registerUser(payload);
-      if (data) {
-        toast.success(
-          "Registration successful! Check your email to activate your account.",
-          {
-            position: "top-right",
-            autoClose: 1000,
-          }
-        );
-        setTimeout(() => {
-          router.push("/login");
-        }, 500);
-      }
-    } catch (errors) {
-      setError(errors as { [key: string]: string });
-      toast.error("Registration failed. Please try again.", {
-        position: "top-right",
-        autoClose: 2000, // Close after 2 seconds
-      });
-    }
+    try{
+      await register_user(payload.email,payload.password);
+      toast("Registration Successfull!, A Activation link sent to your email!");
+      router.push("/login");
+    }catch(e){
+      toast("User already exists with this email!");
+      console.log(e);
+    } 
   };
   return (
     <>
