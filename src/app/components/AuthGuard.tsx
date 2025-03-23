@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import axiosInstance from "@/app/utils/axiosInstance";
-import { Progress } from "@/components/ui/progress";
+// import { Progress } from "@/components/ui/progress";
 
 import {
   verify_user,
@@ -37,9 +37,10 @@ const AuthGuard = ({ children }: any) => {
   }, [router]);
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Progress value={60} />
-      </div>
+      // <div className="flex justify-center items-center h-screen">
+      //   <Progress />
+      // </div>
+      <></>
     );
   }
   return <>{isAuthenticated ? children : null}</>;

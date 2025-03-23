@@ -54,7 +54,7 @@ export default function Login() {
       const user = await login_user(payload.email, payload.password);
       if (user.user && user.user.is_active === true) {
         toast("Welcome to Allset!");
-        router.push("/");
+        router.push("/home");
       } else {
         toast("Please check your credentials!");
       }
@@ -109,7 +109,7 @@ export default function Login() {
               />
             </div>
             <div className="flex flex-col items-center pt-4">
-              <Button label="Sign Up" type="submit" />
+              <Button label="Log In" type="submit" />
             </div>
             <div className="flex flex-col items-center">
               <p className="text-sm text-gray-500">

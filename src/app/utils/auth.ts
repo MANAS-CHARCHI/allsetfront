@@ -14,6 +14,7 @@ export const register_user = async (email: string, password: string) => {
       },
       { withCredentials: true }
     );
+    console.log(email, password);
     return response.data;
   } catch (e) {
     throw new Error("Registration Failed!");
@@ -70,5 +71,21 @@ export const verify_user = async () => {
     return response.data;
   } catch (e) {
     throw new Error("Verify Failed!");
+  }
+};
+
+export const forget_password = async (email: string) => {
+  try {
+    const ForgetPasswordUrl = `${API_URL}user/forget-password/`;
+    const response = await axios.post(
+      ForgetPasswordUrl,
+      {
+        email,
+      },
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (e) {
+    throw new Error("Forget Password Failed!");
   }
 };
