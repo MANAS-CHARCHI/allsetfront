@@ -42,6 +42,8 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
+import { EditProfile } from "./editProfile";
+
 const items = [
   {
     name: "Home",
@@ -211,8 +213,10 @@ export function AppSidebar() {
                 side="top"
                 className="w-[--radix-popper-anchor-width]"
               >
-                <DropdownMenuItem>
-                  <span>Account</span>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <div className="block w-full cursor-pointer">
+                    <EditProfile />
+                  </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <span>Billing</span>
