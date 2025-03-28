@@ -89,3 +89,39 @@ export const forget_password = async (email: string) => {
     throw new Error("Forget Password Failed!");
   }
 };
+
+export const update_user = async (
+  first_name: string,
+  last_name: string,
+  DOB: string,
+  phone_number: string
+) => {
+  try {
+    const UpdateUserUrl = `${API_URL}user/update/`;
+    console.log("🔹 Sending request to:", UpdateUserUrl);
+    console.log("🔹 Payload:", { first_name, last_name, DOB, phone_number });
+    const response = await axios.post(
+      UpdateUserUrl,
+      {
+        first_name,
+        last_name,
+        DOB,
+        phone_number,
+      },
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (e: any) {
+    throw new Error(e.response?.data?.message || "Update User Failed!");
+  }
+};
+
+export const get_user = async () => {
+  try {
+    const GetUserUrl = `${API_URL}user/profile/`;
+    const response = await axios.get(GetUserUrl, { withCredentials: true });
+    return response.data;
+  } catch (e) {
+    throw new Error("Get User Failed!");
+  }
+};

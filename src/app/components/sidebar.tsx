@@ -43,6 +43,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { EditProfile } from "./editProfile";
+import { get_user } from "../utils/auth";
+import LogOut from "./logOut";
 
 const items = [
   {
@@ -101,15 +103,28 @@ export function AppSidebar() {
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
 
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
+  //   if (storedUser) {
+  //     try {
+  //       setUser(JSON.parse(storedUser));
+  //     } catch (e) {
+  //       console.error("Error parsing user data:", e);
+  //     }
+  //   }
+  // }, []);
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
+    async function fetchUserData() {
       try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        console.error("Error parsing user data:", e);
+        const user = await get_user(); // Assume this fetches the logged-in user
+        if (user) {
+          setUser(user);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
     }
+    fetchUserData();
   }, []);
 
   const getDisplayName = () => {
@@ -216,13 +231,16 @@ export function AppSidebar() {
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   <div className="block w-full cursor-pointer">
                     <EditProfile />
+                    {/* Here Edit Profile is a component */}
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <span>Billing</span>
+                  <span>Change Password</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Sign out</span>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <div>
+                    <LogOut />
+                  </div>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

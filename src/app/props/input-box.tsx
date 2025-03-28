@@ -10,6 +10,7 @@ interface InputBoxProps {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   error?: string;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export default function InputBox({
@@ -20,6 +21,7 @@ export default function InputBox({
   onChange,
   className = "w-[330px] h-[47px]",
   error,
+  onKeyDown,
 }: InputBoxProps) {
   return (
     <>
@@ -29,8 +31,9 @@ export default function InputBox({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className={`border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${className} 
-      ${error ? "border-red-500 focus:ring-red-500" : "focus:ring-gray-400"} `}
+        onKeyDown={onKeyDown}
+        className={`border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400 ${className} 
+      ${error ? "border-red-500 focus:ring-red-500" : "focus:ring-gray-900"} `}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </>
