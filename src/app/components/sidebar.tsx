@@ -20,6 +20,11 @@ import {
   CheckCheck,
   ChevronDown,
   ChevronUp,
+  User,
+  CalendarSync,
+  ClipboardPen,
+  WavesLadder,
+  UserPlus,
 } from "lucide-react";
 
 import {
@@ -46,7 +51,7 @@ import { EditProfile } from "./editProfile";
 import { get_user } from "../utils/auth";
 import LogOut from "./logOut";
 
-const items = [
+const topItems = [
   {
     name: "Home",
     href: "/home",
@@ -62,6 +67,9 @@ const items = [
     href: "/inbox",
     icon: Inbox,
   },
+];
+
+const items = [
   {
     name: "Documents",
     href: "/documents",
@@ -88,11 +96,30 @@ const items = [
     icon: Layers,
   },
   {
+    name: "Habit Tracker",
+    href: "/habitTracker",
+    icon: CalendarSync,
+  },
+  {
+    name: "Job Tracker",
+    href: "/jobTracker",
+    icon: WavesLadder,
+  },
+];
+
+const additionals = [
+  {
     name: "Settings",
     href: "/",
     icon: Settings,
   },
+  {
+    name: "Feedback",
+    href: "/",
+    icon: ClipboardPen,
+  },
 ];
+
 interface User {
   email: string;
   first_name?: string;
@@ -102,23 +129,24 @@ interface User {
 export function AppSidebar() {
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   const storedUser = localStorage.getItem("user");
-  //   if (storedUser) {
-  //     try {
-  //       setUser(JSON.parse(storedUser));
-  //     } catch (e) {
-  //       console.error("Error parsing user data:", e);
-  //     }
-  //   }
-  // }, []);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setEmail(JSON.parse(storedUser).email);
+      } catch (e) {
+        console.error("Error parsing user data:", e);
+      }
+    }
+  }, []);
   useEffect(() => {
     async function fetchUserData() {
       try {
         const user = await get_user(); // Assume this fetches the logged-in user
-        if (user) {
-          setUser(user);
+        if (user.success) {
+          setUser(user.data);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -163,17 +191,59 @@ export function AppSidebar() {
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
-              <DropdownMenuItem>
-                <span>Acme Inc</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>Acme Corp.</span>
-              </DropdownMenuItem>
+              <div className="mb-2">
+                <div className="text-xs text-gray-500 font-semibold mb-2 mt-2 text-center">
+                  {email}
+                </div>
+                <div className="flex flex-row w-full justify-evenly ">
+                  <DropdownMenuItem className="border border-gray-200 text-gray-600 p-1 rounded-md w-24 flex justify-center items-center">
+                    <Settings />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="border border-gray-200 text-gray-600 p-1 rounded-md w-24 flex justify-center items-center">
+                    <UserPlus />
+                    Invite
+                  </DropdownMenuItem>
+                </div>
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>
       </SidebarMenu>
       <SidebarContent>
+        <SidebarGroup />
+        <SidebarGroupContent className="mb-[-40px]">
+          <SidebarMenu>
+            {topItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <SidebarMenuItem key={item.name}>
+                  <SidebarMenuButton
+                    asChild
+                    className={`${
+                      isActive
+                        ? "bg-gray-200 hover:bg-gray-200"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    <Link href={item.href}>
+                      {(() => {
+                        return (
+                          <item.icon className="text-gray-500 text-semibold" />
+                        );
+                      })()}
+                      <span className="text-sm font-semibold text-gray-500">
+                        {item.name}
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </SidebarGroupContent>
+        <SidebarGroup />
+
         <SidebarGroup />
         <SidebarGroupLabel>Applications</SidebarGroupLabel>
         <SidebarGroupContent>
@@ -213,14 +283,48 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarGroupContent>
         <SidebarGroup />
+
+        <SidebarGroup />
+        <SidebarGroupContent className="mt-[-20px]">
+          <SidebarMenu>
+            {additionals.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <SidebarMenuItem key={item.name}>
+                  <SidebarMenuButton
+                    asChild
+                    className={`${
+                      isActive
+                        ? "bg-gray-200 hover:bg-gray-200"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    <Link href={item.href}>
+                      {(() => {
+                        return (
+                          <item.icon className="text-gray-500 text-semibold" />
+                        );
+                      })()}
+                      <span className="text-sm font-semibold text-gray-500">
+                        {item.name}
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </SidebarGroupContent>
+        <SidebarGroup />
       </SidebarContent>
+
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild className="hover:bg-gray-100">
                 <SidebarMenuButton>
-                  <div>Username</div>
+                  <div className="font-semibold">Account</div>
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -238,7 +342,7 @@ export function AppSidebar() {
                   <span>Change Password</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  <div>
+                  <div className="block w-full cursor-pointer">
                     <LogOut />
                   </div>
                 </DropdownMenuItem>

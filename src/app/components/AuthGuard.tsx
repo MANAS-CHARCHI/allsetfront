@@ -14,18 +14,46 @@ const AuthGuard = ({ children }: any) => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // useEffect(() => {
+  //   console.log("✅ AuthGuard is running...");
+  //   const checkAuth = async () => {
+  //     try {
+  //       await verify_user();
+  //       setIsAuthenticated(true);
+  //     } catch (error) {
+  //       console.log("user is not authenticated");
+  //       try {
+  //         await refresh_access_token();
+  //         setIsAuthenticated(true);
+  //       } catch (refreshError) {
+  //         console.log("Access token refresh failed, logging out...");
+  //         await logout_user();
+  //         router.replace("/login");
+  //       }
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   checkAuth();
+  // }, [router]);
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await verify_user();
+        const verifyResponse = await verify_user();
+        if (!verifyResponse.success) {
+          throw new Error("User verification failed.");
+        }
         setIsAuthenticated(true);
       } catch (error) {
-        console.log("user is not authenticated");
         try {
-          await refresh_access_token();
+          const refreshResponse = await refresh_access_token();
+          if (!refreshResponse.success) {
+            throw new Error("Token refresh failed.");
+          }
           setIsAuthenticated(true);
         } catch (refreshError) {
-          console.log("Access token refresh failed, logging out...");
           await logout_user();
           router.push("/login");
         }
@@ -35,15 +63,10 @@ const AuthGuard = ({ children }: any) => {
     };
     checkAuth();
   }, [router]);
-  if (loading) {
-    return (
-      // <div className="flex justify-center items-center h-screen">
-      //   <Progress />
-      // </div>
-      <></>
-    );
-  }
-  return <>{isAuthenticated ? children : null}</>;
+
+  if (loading) return null;
+
+  return isAuthenticated ? <>{children}</> : null;
 };
 
 export default AuthGuard;

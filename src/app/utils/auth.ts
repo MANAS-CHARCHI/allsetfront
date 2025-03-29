@@ -15,9 +15,15 @@ export const register_user = async (email: string, password: string) => {
       { withCredentials: true }
     );
     console.log(email, password);
-    return response.data;
-  } catch (e) {
-    throw new Error("Registration Failed!");
+    return {
+      success: true,
+      data: response.data,
+    };
+  } catch (e: any) {
+    return {
+      success: false,
+      message: e.response?.data?.message || "Failed to register user.",
+    };
   }
 };
 
@@ -33,9 +39,15 @@ export const login_user = async (email: string, password: string) => {
       { withCredentials: true }
     );
     localStorage.setItem("user", JSON.stringify(response.data.user));
-    return response.data;
+    return {
+      success: true,
+      data: response.data,
+    };
   } catch (e) {
-    throw new Error("Login Failed!");
+    return {
+      success: false,
+      message: "Failed to login user.",
+    };
   }
 };
 
@@ -58,9 +70,15 @@ export const refresh_access_token = async () => {
       {},
       { withCredentials: true }
     );
-    return response.data;
+    return {
+      success: true,
+      data: response.data,
+    };
   } catch (e) {
-    throw new Error("Refresh Failed!");
+    return {
+      success: false,
+      message: "Failed to refresh access token.",
+    };
   }
 };
 
@@ -68,9 +86,9 @@ export const verify_user = async () => {
   try {
     const VerifyUrl = `${API_URL}user/verify/`;
     const response = await axios.get(VerifyUrl, { withCredentials: true });
-    return response.data;
+    return { success: true, data: response.data };
   } catch (e) {
-    throw new Error("Verify Failed!");
+    return { success: false, message: "Failed to verify user." };
   }
 };
 
@@ -84,9 +102,12 @@ export const forget_password = async (email: string) => {
       },
       { withCredentials: true }
     );
-    return response.data;
-  } catch (e) {
-    throw new Error("Forget Password Failed!");
+    return { success: true, data: response.data };
+  } catch (e: any) {
+    return {
+      success: false,
+      message: e.response?.data?.message || "Failed to forget password.",
+    };
   }
 };
 
@@ -110,9 +131,12 @@ export const update_user = async (
       },
       { withCredentials: true }
     );
-    return response.data;
+    return { success: true, data: response.data };
   } catch (e: any) {
-    throw new Error(e.response?.data?.message || "Update User Failed!");
+    return {
+      success: false,
+      message: e.response?.data?.message || "Failed to Update user data.", //TODO: Switch the 'OR' when deploy
+    };
   }
 };
 
@@ -120,8 +144,11 @@ export const get_user = async () => {
   try {
     const GetUserUrl = `${API_URL}user/profile/`;
     const response = await axios.get(GetUserUrl, { withCredentials: true });
-    return response.data;
-  } catch (e) {
-    throw new Error("Get User Failed!");
+    return { success: true, data: response.data };
+  } catch (e: any) {
+    return {
+      success: false,
+      message: e.response?.data?.message || "Failed to fetch user data.",
+    };
   }
 };

@@ -52,11 +52,15 @@ export default function Login() {
     };
     try {
       const user = await login_user(payload.email, payload.password);
-      if (user.user && user.user.is_active === true) {
-        toast("Welcome to Allset!");
-        router.push("/home");
-      } else {
+      if (!user.success) {
         toast("Please check your credentials!");
+      } else {
+        if (user.data.user && user.data.user.is_active === true) {
+          toast("Welcome to Allset!");
+          router.push("/home");
+        } else {
+          toast("Please check your credentials!");
+        }
       }
     } catch (e) {
       toast("Please check your credentials!");
@@ -84,6 +88,7 @@ export default function Login() {
                 placeholder=""
                 value={formData.email}
                 onChange={handleChange}
+                autoComplete="email"
                 className=" tracking-wide font-medium"
                 error={invalidError?.email}
               />
@@ -102,6 +107,7 @@ export default function Login() {
                 type="password"
                 name="password"
                 placeholder=""
+                autoComplete="current-password"
                 value={formData.password}
                 onChange={handleChange}
                 className=" tracking-widest font-bold"

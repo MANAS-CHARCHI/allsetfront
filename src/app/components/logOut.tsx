@@ -15,7 +15,12 @@ export default function LogOut() {
   };
   return (
     <>
-      <button onClick={handleLogout}>Log out</button>
+      <button
+        onClick={handleLogout}
+        className="w-full text-left cursor-pointer"
+      >
+        Log out
+      </button>
     </>
   );
 }

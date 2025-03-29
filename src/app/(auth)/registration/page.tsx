@@ -4,9 +4,9 @@ import Image from "next/image";
 import InputBox from "../../props/input-box";
 import Button from "../../props/button";
 import Link from "next/link";
-import {register_user} from "@/app/utils/auth";
+import { register_user } from "@/app/utils/auth";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner" 
+import { toast } from "sonner";
 
 export default function Registration() {
   const [error, setError] = useState<{ [key: string]: string } | null>(null);
@@ -15,7 +15,7 @@ export default function Registration() {
     email: string;
     password: string;
     confirmPassword: string;
-  };
+  }
 
   const [formData, setFormData] = useState<State>({
     email: "",
@@ -58,14 +58,19 @@ export default function Registration() {
       email: formData.email,
       password: formData.password,
     };
-    try{
-      await register_user(payload.email,payload.password);
-      toast("Registration Successfull!, A Activation link sent to your email!");
-      router.push("/login");
-    }catch(e){
-      toast("User already exists with this email!");
-      console.log(e);
-    } 
+    try {
+      const user = await register_user(payload.email, payload.password);
+      if (user.success) {
+        toast(
+          "Registration Successfull!, A Activation link sent to your email!"
+        );
+        router.push("/login");
+      } else {
+        toast("User already exists with this email!");
+      }
+    } catch (e: any) {
+      toast(e.message || "Failed to register user.");
+    }
   };
   return (
     <>
@@ -87,6 +92,7 @@ export default function Registration() {
                 placeholder=""
                 value={formData.email}
                 onChange={handleChange}
+                autoComplete="email"
                 className=" tracking-wide font-medium"
                 error={error?.email}
               />
@@ -98,6 +104,7 @@ export default function Registration() {
                 name="password"
                 placeholder=""
                 value={formData.password}
+                autoComplete="current-password"
                 onChange={handleChange}
                 className=" tracking-widest font-bold"
                 error={error?.password}
@@ -112,6 +119,7 @@ export default function Registration() {
                 name="confirmPassword"
                 placeholder=""
                 value={formData.confirmPassword}
+                autoComplete="current-password"
                 onChange={handleChange}
                 className=" tracking-widest font-bold"
                 error={error?.confirmPassword}

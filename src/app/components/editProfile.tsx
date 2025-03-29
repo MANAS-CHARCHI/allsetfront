@@ -33,17 +33,20 @@ export function EditProfile() {
     DOB: "",
     phoneNumber: "",
   });
+
   useEffect(() => {
     async function fetchUserData() {
       try {
         const user = await get_user(); // Assume this fetches the logged-in user
-        if (user) {
+        if (user.success) {
           setFormData({
-            firstName: user.first_name || "",
-            lastName: user.last_name || "",
-            DOB: user.DOB || "",
-            phoneNumber: user.phone_number || "",
+            firstName: user.data.first_name || "",
+            lastName: user.data.last_name || "",
+            DOB: user.data.DOB || "",
+            phoneNumber: user.data.phone_number || "",
           });
+        } else {
+          toast.error(user.message);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -65,26 +68,25 @@ export function EditProfile() {
       formData.firstName.trim() !== "" &&
       !/^[a-zA-Z\s]+$/.test(formData.firstName)
     ) {
-      newErrors.firstName =
-        "First name cannot contain numbers, dots, or commas.";
+      newErrors.firstName = "Can't contain numbers, dots, or commas.";
     }
     if (
       formData.lastName.trim() !== "" &&
       !/^[a-zA-Z\s]+$/.test(formData.lastName)
     ) {
-      newErrors.lastName = "Last name cannot contain numbers, dots, or commas.";
+      newErrors.lastName = "Can't contain numbers, dots, or commas.";
     }
     if (
       formData.DOB.trim() !== "" &&
       !/^\d{4}-\d{2}-\d{2}$/.test(formData.DOB)
     ) {
-      newErrors.DOB = "Date of Birth must be in YYYY-MM-DD format.";
+      newErrors.DOB = "Must be in YYYY-MM-DD format.";
     } else {
       // Check if the date is valid
       const dobDate = new Date(formData.DOB);
       const today = new Date();
       if (dobDate > today) {
-        newErrors.DOB = "Date of Birth cannot be in the future.";
+        newErrors.DOB = "Can't be in the future.";
       }
     }
     if (formData.phoneNumber.trim() !== "") {
@@ -92,14 +94,13 @@ export function EditProfile() {
         formData.phoneNumber.length < 10 ||
         formData.phoneNumber.length > 15
       ) {
-        newErrors.phoneNumber = "Phone number don't have a valid length.";
+        newErrors.phoneNumber = "Can't have a valid length.";
       }
       if (!/^[\d+ ]+$/.test(formData.phoneNumber)) {
         newErrors.phoneNumber = "Invalid phone number format.";
       }
       if ((formData.phoneNumber.match(/\+/g) || []).length > 1) {
-        newErrors.phoneNumber =
-          "Phone number can only have one '+' at the beginning.";
+        newErrors.phoneNumber = "Can only have one '+' at the beginning.";
       }
       if (
         formData.phoneNumber.includes("+") &&
@@ -131,15 +132,15 @@ export function EditProfile() {
         payload.DOB,
         payload.phoneNumber
       );
-      console.log("Response from update_user:", user); // Debugging log
-      if (user) {
+      console.log("Response from update_user:", user.data); // Debugging log
+      if (user.success) {
         toast("Profile updated successfully!");
       } else {
         toast("Update failed: No user returned");
       }
     } catch (e) {
       console.error("Error in update_user:", e);
-      toast("Update failed! Check console for error.");
+      toast("Update failed! Please try again.");
     }
   };
 
@@ -165,24 +166,22 @@ export function EditProfile() {
               >
                 First Name
               </Label>
-              <InputBox
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="h-10 w-full"
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.stopPropagation();
-                  }
-                }}
-                placeholder="First Name"
-              />
-              {invalidError.firstName && (
-                <span className="text-red-500 text-sm mt-1">
-                  {invalidError.firstName}
-                </span>
-              )}
+              <div className="flex flex-col w-full">
+                <InputBox
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className="h-10 w-full"
+                  onKeyDown={(e) => {
+                    if (e.key === " ") {
+                      e.stopPropagation();
+                    }
+                  }}
+                  placeholder="First Name"
+                  error={invalidError.firstName}
+                />
+              </div>
             </div>
 
             {/* Last Name */}
@@ -193,24 +192,22 @@ export function EditProfile() {
               >
                 Last Name
               </Label>
-              <InputBox
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="h-10 w-full"
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.stopPropagation();
-                  }
-                }}
-                placeholder="Last Name"
-              />
-              {invalidError.lastName && (
-                <span className="text-red-500 text-sm mt-1">
-                  {invalidError.lastName}
-                </span>
-              )}
+              <div className="flex flex-col w-full">
+                <InputBox
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className="h-10 w-full"
+                  onKeyDown={(e) => {
+                    if (e.key === " ") {
+                      e.stopPropagation();
+                    }
+                  }}
+                  placeholder="Last Name"
+                  error={invalidError.lastName}
+                />
+              </div>
             </div>
 
             {/* DOB */}
@@ -218,24 +215,22 @@ export function EditProfile() {
               <Label htmlFor="DOB" className="text-left w-52 content-center">
                 DOB
               </Label>
-              <InputBox
-                type="text"
-                name="DOB"
-                value={formData.DOB}
-                onChange={handleChange}
-                className="h-10 w-full"
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.stopPropagation();
-                  }
-                }}
-                placeholder="YYYY-MM-DD"
-              />
-              {invalidError.DOB && (
-                <span className="text-red-500 text-sm mt-1">
-                  {invalidError.DOB}
-                </span>
-              )}
+              <div className="flex flex-col w-full">
+                <InputBox
+                  type="text"
+                  name="DOB"
+                  value={formData.DOB}
+                  onChange={handleChange}
+                  className="h-10 w-full"
+                  onKeyDown={(e) => {
+                    if (e.key === " ") {
+                      e.stopPropagation();
+                    }
+                  }}
+                  placeholder="YYYY-MM-DD"
+                  error={invalidError.DOB}
+                />
+              </div>
             </div>
 
             {/* Phone Number */}
@@ -246,24 +241,22 @@ export function EditProfile() {
               >
                 Phone Number
               </Label>
-              <InputBox
-                type="text"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                className="h-10 w-full"
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.stopPropagation();
-                  }
-                }}
-                placeholder="Phone Number"
-              />
-              {invalidError.phoneNumber && (
-                <span className="text-red-500 text-sm mt-1">
-                  {invalidError.phoneNumber}
-                </span>
-              )}
+              <div className="flex flex-col w-full">
+                <InputBox
+                  type="text"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  className="h-10 w-full"
+                  onKeyDown={(e) => {
+                    if (e.key === " ") {
+                      e.stopPropagation();
+                    }
+                  }}
+                  placeholder="Phone Number"
+                  error={invalidError.phoneNumber}
+                />
+              </div>
             </div>
           </div>
 

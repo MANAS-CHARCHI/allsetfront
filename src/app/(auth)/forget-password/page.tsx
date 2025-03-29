@@ -67,15 +67,15 @@ export default function ForgetPassword() {
           </p>
         </div>
         <div className="flex items-center justify-center  w-full">
-          <form className="flex flex-col gap-3 pt-8" onClick={handleSubmit}>
+          <form className="flex flex-col gap-3 pt-8" onSubmit={handleSubmit}>
             <div className="flex flex-col">
               <label className="text-[13px] text-gray-500">Email</label>
               <InputBox
                 type="text"
                 name="email"
                 placeholder=""
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleChange}
               />
             </div>
             <div className="flex flex-col"></div>
