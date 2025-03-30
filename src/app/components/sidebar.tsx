@@ -25,6 +25,7 @@ import {
   ClipboardPen,
   WavesLadder,
   UserPlus,
+  LogOut as LogOutIcon,
 } from "lucide-react";
 
 import {
@@ -50,6 +51,8 @@ import {
 import { EditProfile } from "./editProfile";
 import { get_user } from "../utils/auth";
 import LogOut from "./logOut";
+import { ChangePassword } from "./changePassword";
+import { useRouter } from "next/navigation";
 
 const topItems = [
   {
@@ -110,7 +113,7 @@ const items = [
 const additionals = [
   {
     name: "Settings",
-    href: "/",
+    href: "/settings",
     icon: Settings,
   },
   {
@@ -126,6 +129,7 @@ interface User {
   last_name?: string;
   last_login?: string;
 }
+
 export function AppSidebar() {
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
@@ -171,6 +175,7 @@ export function AppSidebar() {
       return user?.email.charAt(0).toUpperCase() || "A";
     }
   };
+  const router = useRouter();
   return (
     <Sidebar className="pl-3">
       <SidebarHeader />
@@ -196,9 +201,14 @@ export function AppSidebar() {
                   {email}
                 </div>
                 <div className="flex flex-row w-full justify-evenly ">
-                  <DropdownMenuItem className="border border-gray-200 text-gray-600 p-1 rounded-md w-24 flex justify-center items-center">
-                    <Settings />
-                    Settings
+                  <DropdownMenuItem
+                    onSelect={(e) => e.preventDefault()}
+                    className="border border-gray-200 text-gray-600 p-1 rounded-md w-24 flex justify-center items-center cursor-pointer"
+                  >
+                    {" "}
+                    <LogOut />
+                    {/* <Settings />
+                    Settings */}
                   </DropdownMenuItem>
                   <DropdownMenuItem className="border border-gray-200 text-gray-600 p-1 rounded-md w-24 flex justify-center items-center">
                     <UserPlus />
@@ -342,7 +352,7 @@ export function AppSidebar() {
                   <span>Change Password</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  <div className="block w-full cursor-pointer">
+                  <div className="block w-full cursor-pointer hover:text-red-600">
                     <LogOut />
                   </div>
                 </DropdownMenuItem>

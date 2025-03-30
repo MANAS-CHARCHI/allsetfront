@@ -1,6 +1,7 @@
 import { logout_user } from "@/app/utils/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { LogOut as LogOutIcon } from "lucide-react";
 export default function LogOut() {
   const router = useRouter();
   const handleLogout = async () => {
@@ -17,8 +18,9 @@ export default function LogOut() {
     <>
       <button
         onClick={handleLogout}
-        className="w-full text-left cursor-pointer"
+        className="w-full text-left flex flex-row gap-1 cursor-pointer  hover:text-red-600"
       >
+        <LogOutIcon className="w-4 pb-1" />
         Log out
       </button>
     </>

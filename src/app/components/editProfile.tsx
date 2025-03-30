@@ -54,6 +54,7 @@ export function EditProfile() {
     }
     fetchUserData();
   }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
